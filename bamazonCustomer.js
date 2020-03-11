@@ -11,10 +11,10 @@ var connection = mysql.createConnection({
   port: 3306,
 
   // Your username
-  user: "root",
+  user: "austin",
 
   // Your password
-  password: "",
+  password: "root",
   database: "bamazon"
 });
 
@@ -33,38 +33,85 @@ function loadProducts() {
     if (err) throw err;
 
     // Draw the table in the terminal using the response
+    console.log("\n")
     console.table(res);
 
     // Then prompt the customer for their choice of product, pass all the products to promptCustomerForItem
-    promptCustomerForItem(res);
+    promptCustomerForItem();
   });
 }
 
 // Prompt the customer for a product ID
-function promptCustomerForItem(inventory) {
-  // Prompts user for what they would like to purchase
- 
-}
+function promptCustomerForItem() {
+    // Prompts user for what they would like to purchase
+    inquirer
+        .prompt([
+            {
+              type: "input",
+              name: "invSelect",
+              message: "What is the ID number of the product would you like to purchase?"
+            },
+            {
+              type: "input",
+              name: "quanSelect",
+              message: "How many items of this product would you like to purchase?"
+            }
+        ])
+        .then(function(productAnswers){
+          var productId = productAnswers.invSelect
+          var productQuantity = productAnswers.quanSelect
 
-// Prompt the customer for a product quantity
-function promptCustomerForQuantity(product) {
+          connection.query("SELECT * FROM products WHERE item_id = " + productId, function(err, res) {
+              if (err) throw err
+              
+              if (res[0].stock_quantity < productQuantity){
+                console.log("\nSorry, but we only have " + res[0].stock_quantity + " units of this product on hand.\n\nPlease try again.\n")
+                promptCustomerForItem()
+              } else {
+                var cost = productQuantity * res[0].price
+                makePurchase(productId, productQuantity, cost)
+              }
+          })
+        })
+        .catch(function(err){
+            if (err) throw err
+        })
 }
 
 // Purchase the desired quantity of the desired item
-function makePurchase(product, quantity) {
-  
-}
+function makePurchase(productId, productQuantity, cost) {
+  connection.query("UPDATE products SET stock_quantity = stock_quantity" + -productQuantity + " WHERE item_id = " + productId, function(err, res) {
+    if (err) throw err
+  })
 
-// Check to see if the product the user chose exists in the inventory
-function checkInventory(choiceId, inventory) {
- 
+  console.log("\n=============================")
+  console.log("Your order total is: $" + cost)
+  console.log("=============================\n")
+  
+  inquirer
+        .prompt([
+            {
+              type: "input",
+              name: "exit",
+              message: "Would you like to exit the program? (type: q)\nOtherwise press Enter to make another purchase."
+            }
+        ])
+        .then(function(exitAnswer){
+            checkIfShouldExit(exitAnswer.exit)
+        })
+        .catch(function(err){
+            if (err) throw err
+        })
+
 }
 
 // Check to see if the user wants to quit the program
 function checkIfShouldExit(choice) {
   if (choice.toLowerCase() === "q") {
     // Log a message and exit the current node process
-    console.log("Goodbye!");
+    console.log("\nGoodbye!\n");
     process.exit(0);
+  } else {
+    loadProducts()
   }
 }
