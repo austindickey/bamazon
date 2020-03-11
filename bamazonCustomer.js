@@ -1,3 +1,9 @@
+// I did use the starter file provided by the instructor, but I took out
+// several non essential functions... At least they were in my humble opinion.
+// I feel like every bit of my code works well, and I've actually set it up to
+// constantly be repeating until the customer exits the app.
+
+
 // Initializes the npm packages used
 var mysql = require("mysql");
 var inquirer = require("inquirer");
