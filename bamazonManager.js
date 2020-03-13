@@ -11,10 +11,10 @@ var connection = mysql.createConnection({
   port: 3306,
 
   // Your username
-  user: "root",
+  user: "austin",
 
   // Your password
-  password: " ",
+  password: "root",
   database: "bamazon"
 });
 
@@ -43,10 +43,41 @@ function loadManagerOptions(products) {
       type: "list",
       name: "choice",
       choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit"],
-      message: "What would you like to do?"
+      message: "\nWhat would you like to do?\n"
     })
     .then(function(val) {
       //TODO: Write your code here
+
+      switch (val.choice) {
+        case "View Products for Sale":
+          console.log("\n")
+          console.table(products)
+          loadManagerOptions()
+
+          break;
+      
+        case "View Low Inventory":
+          loadLowInventory()
+        
+          break;
+
+        case "Add to Inventory":
+          addToInventory()
+
+          break;
+
+        case "Add New Product":
+          addNewProduct()
+          
+          break;
+
+        case "Quit":
+          console.log("\nGoodbye!\n")
+          process.exit(0)
+
+          break;
+      }
+
     });
 }
 
