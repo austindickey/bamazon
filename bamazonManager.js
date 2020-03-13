@@ -62,13 +62,13 @@ function loadManagerOptions(products) {
           break;
 
         case "Add to Inventory":
-          addToInventory()
+          addToInventory(products)
 
           break;
 
         case "Add New Product":
           addNewProduct()
-          
+
           break;
 
         case "Quit":
@@ -84,9 +84,10 @@ function loadManagerOptions(products) {
 // Query the DB for low inventory products
 function loadLowInventory() {
   // Selects all of the products that have a quantity of 5 or less
-  connection.query("ENTER-your-quey-here", function(err, res) {
+  connection.query("SELECT * FROM products WHERE stock_quantity <= 5", function(err, res) {
     if (err) throw err;
     // Draw the table in the terminal using the response, load the manager menu
+    console.log("\n")
     console.table(res);
     loadManagerMenu();
   });
@@ -94,6 +95,7 @@ function loadLowInventory() {
 
 // Prompt the manager for a product to replenish
 function addToInventory(inventory) {
+  console.log("\n")
   console.table(inventory);
   inquirer
     .prompt([
@@ -108,11 +110,13 @@ function addToInventory(inventory) {
     ])
     .then(function(val) {
       //TODO: Write your code here
+      updateQuantity(val.choice)
+
     });
 }
 
 // Ask for the quantity that should be added to the chosen product
-function promptManagerForQuantity(product) {
+function updateQuantity(product) {
   inquirer
     .prompt([
       {
@@ -127,16 +131,14 @@ function promptManagerForQuantity(product) {
     .then(function(val) {
     
       //TODO: Write your code here
+      connection.query("UPDATE products SET stock_quantity = stock_quantity + " + val.quantity + " WHERE item_id = " + product, function(err, res) {
+        if (err) throw err;
+
+        console.log("\n You've added " + val.quantity + " units to your product with the id of " + product + "\n")
+        loadManagerMenu();
+      });
 
     });
-}
-
-// Adds the specified quantity to the specified product
-function addQuantity(product, quantity) {
-  connection.query(
-  
-  //TODO: Write your code here
-  );
 }
 
 // Gets all departments, then gets the new product info, then inserts the new product into the db
@@ -183,7 +185,7 @@ function getProductInfo(departments) {
 function insertNewProduct(val) {
   connection.query(
 
-    //FIXME: ADD YOUE SQL QUERY HERE
+    //FIXME: ADD YOURE SQL QUERY HERE
 
     function(err, res) {
       if (err) throw err;
