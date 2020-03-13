@@ -52,7 +52,7 @@ function loadManagerOptions(products) {
         case "View Products for Sale":
           console.log("\n")
           console.table(products)
-          loadManagerOptions()
+          loadManagerOptions(products)
 
           break;
       
@@ -67,7 +67,7 @@ function loadManagerOptions(products) {
           break;
 
         case "Add New Product":
-          addNewProduct()
+          getProductInfo()
 
           break;
 
@@ -111,6 +111,17 @@ function addToInventory(inventory) {
     .then(function(val) {
       //TODO: Write your code here
       updateQuantity(val.choice)
+      
+      // The problem with the below code is that val.choice will always return true,
+      // even when the item number does not exist.
+      //
+      // checkInventory(val.choice, inventory)
+      // if (val.choice !== null) {
+      //   updateQuantity(val.choice)
+      // } else {
+      //   console.log("\n That item ID does not exist. Please choose another item.\n")
+      //   addToInventory(inventory)
+      // }
 
     });
 }
@@ -144,6 +155,7 @@ function updateQuantity(product) {
 // Gets all departments, then gets the new product info, then inserts the new product into the db
 function addNewProduct() {
   getDepartments(function(err, departments) {
+    if (err) throw err
     getProductInfo(departments).then(insertNewProduct);
   });
 }
