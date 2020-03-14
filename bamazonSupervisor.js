@@ -26,3 +26,50 @@ connection.connect(function(err) {
   loadSupervisorMenu();
 });
 
+// Get product data from the database
+function loadSupervisorMenu() {
+    connection.query("SELECT * FROM departments", function(err, res) {
+      if (err) throw err;
+  
+      // Load the possible manager menu options, pass in the products data
+      loadSupervisorOptions(res);
+    });
+  }
+  
+  // Load the manager options and pass in the products data from the database
+  function loadSupervisorOptions(departments) {
+    inquirer
+      .prompt({
+        type: "list",
+        name: "choice",
+        choices: ["View Product Sales by Department", "Create New Department", "Quit"],
+        message: "\nWhat would you like to do?\n"
+      })
+      .then(function(val) {
+        
+        switch (val.choice) {
+          case "View Product Sales by Department":
+            console.log("\n")
+            console.table(departments)
+            loadSupervisorOptions(products)
+  
+            break;
+        
+          case "Create New Department":
+            newDepartment()
+          
+            break;
+  
+          case "Quit":
+            console.log("\nGoodbye!\n")
+            process.exit(0)
+  
+            break;
+        }
+  
+      });
+  }
+
+function newDepartment() {
+  // still need to code
+}
