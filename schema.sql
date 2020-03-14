@@ -31,6 +31,8 @@ VALUES ("Red Dead Redemption 2", "Video Games", 59.99, 150),
   department_id INT AUTO_INCREMENT NOT NULL,
   department_name VARCHAR(45) NOT NULL,
   over_head_costs DECIMAL(10,2) NOT NULL,
+  product_sales DECIMAL(10,2) DEFAULT 0,
+  total_profit DECIMAL(10,2) DEFAULT 0,
   primary key(department_id)
 );
 
@@ -42,4 +44,4 @@ VALUES ("Video Games", 200),
   ("Apparel", 50),
   ("Necessities", 300),
   ("Films", 35),
-  ("Board Games", 0);
+  ("Board Games", 10);

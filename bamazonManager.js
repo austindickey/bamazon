@@ -114,18 +114,6 @@ function addToInventory(inventory) {
     .then(function(val) {
       //Your Code Here:
       updateQuantity(val.choice)
-      
-      // The problem with the below code is that val.choice will always return true,
-      // even when the item number does not exist.
-      //
-      // checkInventory(val.choice, inventory)
-      // if (val.choice !== null) {
-      //   updateQuantity(val.choice)
-      // } else {
-      //   console.log("\n That item ID does not exist. Please choose another item.\n")
-      //   addToInventory(inventory)
-      // }
-
     });
 }
 
@@ -232,16 +220,4 @@ function getDepartments() {
     getProductInfo(departmentNameArray)
   })
 
-}
-
-// Check to see if the product the user chose exists in the inventory
-function checkInventory(choiceId, inventory) {
-  for (var i = 0; i < inventory.length; i++) {
-    if (inventory[i].item_id === choiceId) {
-      // If a matching product is found, return the product
-      return inventory[i];
-    }
-  }
-  // Otherwise return null
-  return null;
 }

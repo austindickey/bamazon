@@ -72,4 +72,5 @@ function loadSupervisorMenu() {
 
 function newDepartment() {
   // still need to code
+  
 }
