@@ -86,7 +86,7 @@ function promptCustomerForItem() {
 
 // Purchase the desired quantity of the desired item
 function makePurchase(productId, productQuantity, cost) {
-  connection.query("UPDATE products SET stock_quantity = stock_quantity" + -productQuantity + " WHERE item_id = " + productId, function(err, res) {
+  connection.query("UPDATE products SET stock_quantity = stock_quantity" + -productQuantity + ", product_sales = product_sales + " + cost + " WHERE item_id = " + productId, function(err, res) {
     if (err) throw err
   })
 

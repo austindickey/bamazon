@@ -1,3 +1,6 @@
+// I also removed some functions in this file from the starter version,
+// specifically for adding a new product.
+
 // Initializes the npm packages used
 var mysql = require("mysql");
 var inquirer = require("inquirer");
@@ -46,7 +49,7 @@ function loadManagerOptions(products) {
       message: "\nWhat would you like to do?\n"
     })
     .then(function(val) {
-      //TODO: Write your code here
+      //Your Code Here:
 
       switch (val.choice) {
         case "View Products for Sale":
@@ -67,7 +70,7 @@ function loadManagerOptions(products) {
           break;
 
         case "Add New Product":
-          getProductInfo()
+          getDepartments()
 
           break;
 
@@ -109,7 +112,7 @@ function addToInventory(inventory) {
       }
     ])
     .then(function(val) {
-      //TODO: Write your code here
+      //Your Code Here:
       updateQuantity(val.choice)
       
       // The problem with the below code is that val.choice will always return true,
@@ -141,7 +144,7 @@ function updateQuantity(product) {
     ])
     .then(function(val) {
     
-      //TODO: Write your code here
+      //Your Code Here:
       connection.query("UPDATE products SET stock_quantity = stock_quantity + " + val.quantity + " WHERE item_id = " + product, function(err, res) {
         if (err) throw err;
 
@@ -150,14 +153,6 @@ function updateQuantity(product) {
       });
 
     });
-}
-
-// Gets all departments, then gets the new product info, then inserts the new product into the db
-function addNewProduct() {
-  getDepartments(function(err, departments) {
-    if (err) throw err
-    getProductInfo(departments).then(insertNewProduct);
-  });
 }
 
 // Prompts manager for new product info, then adds new product
@@ -171,7 +166,7 @@ function getProductInfo(departments) {
     {
       type: "list",
       name: "department_name",
-      choices: getDepartmentNames(departments),
+      choices: departments,
       message: "Which department does this product fall into?"
     },
     {
@@ -190,18 +185,28 @@ function getProductInfo(departments) {
         return !isNaN(val);
       }
     }
-  ]);
+  ]).then(function(val){
+    var productName = val.product_name
+    var department = val.department_name
+    var price = val.price
+    var quantity = val.quantity
+    insertNewProduct(productName, department, price, quantity)
+  }).catch(function(err){
+    if(err) throw err
+  })
 }
 
 // Adds new product to the db
-function insertNewProduct(val) {
+function insertNewProduct(productName, department, price, quantity) {
   connection.query(
 
-    //FIXME: ADD YOURE SQL QUERY HERE
-
+    //Your Code Here:
+    "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ('" + productName + "', '" + department + "', " + price + ", " + quantity + ")",
     function(err, res) {
       if (err) throw err;
-      console.log(val.product_name + " ADDED TO BAMAZON!\n");
+      console.log("\n=============================")
+      console.log(productName + " ADDED TO BAMAZON!")
+      console.log("=============================\n")
       // When done, re run loadManagerMenu, effectively restarting our app
       loadManagerMenu();
     }
@@ -209,15 +214,24 @@ function insertNewProduct(val) {
 }
 
 // Gets all of the departments and runs a callback function when done
-function getDepartments(cb) {
-//FIXME:  connection.query(//ADD-YOUE-SQL-QUERY-HERE, cb);
-}
+function getDepartments() {
+  //Your Code Here:
+  var departmentNameArray = []
 
-// Is passed an array of departments from the db, then returns an array of just the department names
-function getDepartmentNames(departments) {
-  return departments.map(function(department) {
-    return department.department_name;
-  });
+  connection.query("SELECT * FROM products", function(err, res){
+    if (err) throw err
+
+    for (var i = 0; i < res.length; i++) {
+      if (departmentNameArray.indexOf(res[i].department_name) > -1) {
+        
+      } else {
+        departmentNameArray.push(res[i].department_name)
+      }
+    }
+
+    getProductInfo(departmentNameArray)
+  })
+
 }
 
 // Check to see if the product the user chose exists in the inventory
