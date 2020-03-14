@@ -192,9 +192,9 @@ function insertNewProduct(productName, department, price, quantity) {
     "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ('" + productName + "', '" + department + "', " + price + ", " + quantity + ")",
     function(err, res) {
       if (err) throw err;
-      console.log("\n=============================")
-      console.log(productName + " ADDED TO BAMAZON!")
-      console.log("=============================\n")
+      console.log("\n=======================================================")
+      console.log(productName + " was succesfully added to Bamazon.")
+      console.log("=======================================================\n")
       // When done, re run loadManagerMenu, effectively restarting our app
       loadManagerMenu();
     }
@@ -206,17 +206,12 @@ function getDepartments() {
   //Your Code Here:
   var departmentNameArray = []
 
-  connection.query("SELECT * FROM products", function(err, res){
+  connection.query("SELECT * FROM departments", function(err, res){
     if (err) throw err
 
     for (var i = 0; i < res.length; i++) {
-      if (departmentNameArray.indexOf(res[i].department_name) > -1) {
-        
-      } else {
-        departmentNameArray.push(res[i].department_name)
-      }
+      departmentNameArray.push(res[i].department_name)
     }
-
     getProductInfo(departmentNameArray)
   })
 

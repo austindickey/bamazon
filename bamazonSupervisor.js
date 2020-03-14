@@ -31,17 +31,12 @@ connection.connect(function(err) {
 function getDepartments() {
   var departmentNameArray = []
 
-  connection.query("SELECT * FROM products", function(err, res){
+  connection.query("SELECT * FROM departments", function(err, res){
     if (err) throw err
 
     for (var i = 0; i < res.length; i++) {
-      if (departmentNameArray.indexOf(res[i].department_name) > -1) {
-        
-      } else {
-        departmentNameArray.push(res[i].department_name)
-      }
+      departmentNameArray.push(res[i].department_name)
     }
-
     calculateSales(departmentNameArray)
   })
 }
@@ -137,10 +132,12 @@ function newDepartment() {
       ])
       .then(function(val) {
         
-        connection.query("INSERT INTO departments (department_name, over_head_costs) VALUES (" + val.department_name + ", " + val.over_head_costs + ")", function(err, res){
+        connection.query("INSERT INTO departments (department_name, over_head_costs) VALUES ('" + val.department_name + "', " + val.over_head_costs + ")", function(err, res){
           if (err) throw err
-
-          // probably just a query call to push data to the table
+          console.log("\n=======================================================")
+          console.log(val.department_name + " was succesfully added to the departments table.")
+          console.log("=======================================================\n")
+          loadSupervisorOptions()
         })
   
       })
